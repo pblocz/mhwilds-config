@@ -46,6 +46,18 @@ changes = {
     },
 }
 
+
+def install_reframework():
+    url = "https://github.com/praydog/REFramework/releases/latest/download/MHWILDS.zip"
+    p = "MHWILDS.zip"
+    Path(p).write_bytes(requests.get(url).content)
+    zipfile.ZipFile(p).extract("dinput8.dll", ".")
+
+
+def mod_installs():
+    install_reframework()
+
+
 def update_config(file_path, changes):
     # Read the original config file
     config = configparser.ConfigParser()
