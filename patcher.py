@@ -151,10 +151,20 @@ def install_volumentric_fog_mod():
         if file.startswith('reframework/'):
             archive.extract(file, '.')
 
+def install_graphics_options_mod():
+    # https://www.nexusmods.com/monsterhunterwilds/mods/455?tab=files&file_id=2419
+    p = "graphics_options_v1.5.1-816-1-5-1-1746051399.zip"
+    archive = zipfile.ZipFile(p)
+    
+    for file in archive.namelist():
+        if file.startswith('reframework/'):
+            archive.extract(file, '.')
+
 def mod_installs():
     install_reframework()
     install_disablepostpo()
     install_volumentric_fog_mod()
+    install_graphics_options_mod()
 
 # mod_installs()
 
