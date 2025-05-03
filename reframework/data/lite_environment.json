@@ -1,0 +1,5 @@
+{
+    "global_illumination": false,
+    "volumetric_fog": true,
+    "wind_simulation": false
+}
