@@ -1,0 +1,10 @@
+__storage__
+*.dll
+*.exe
+*.pak
+*.cache*
+*.txt
+*.hpp
+*.dmp
+actionManifest
+*.vdf
