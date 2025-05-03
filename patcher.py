@@ -1,62 +1,164 @@
+#%%
+
 import configparser
+from pathlib import Path
 import click
 import shutil
 import os
 import stat
+import requests
+import zipfile
 
-# Command to run in steam
-# WINEDLLOVERRIDES="dinput8.dll=n,b" __GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1 mangohud gamemoderun %command%
+# WINEDLLOVERRIDES="dinput8.dll=n,b" DXVK_FRAME_RATE=48 mangohud gamemoderun %command%
+
+# https://www.nexusmods.com/monsterhunterwilds/mods/234?tab=description
 
 # Define the changes to be applied with the correct sections
 # gamescope --fullscreen -w 1280 -h 720 -W 1920 -H 1280 -S integer -F fsr --expose-wayland --mangoapp -- %command%
+
+# # Very low
+# changes = {
+#     'Graphics': {
+#         "Algorithm": "FSR3",
+#         "Bloom_Enable": "False",
+#         'Fog_Enable': 'False',
+#         'VolumetricFogControl_Enable': 'False',
+#         'VRSSetting': 'Performance',
+#         "MaxFPS": "120",  # Move this configuration to steam launch DXVK_FRAME_RATE=48
+#         "NormalWindowResolution": "(1920,1280)",
+#         "VSync": "False",
+
+#         # "SSAO_HalfResolution": "True",
+#         # "NormalWindowResolution": "(1280,720)",
+#     },
+#     'RenderConfig': {
+#         "BloomEnable": "false",
+#         'EffectVolume': '0',
+#         'FilmGrainEnable': 'false',
+#         'GodRayEnable': 'false',
+#         'LensFlareEnable': 'false',
+#         'LensDistortionSetting': 'false',
+#         'TransparentBufferQuality': 'LOWEST',
+#         'VRSSetting': 'Performance',
+#         "VSync": "false",
+#         'NormalWindowResolution': '(1920.000000,1280.000000)',
+
+#         "RayTracingGIEnable": "true",
+#         "RayTracingReflectionEnable": "true",
+#         "RayTracingShadowEnable": "true",
+#         "RayTracingTransparentEnable": "true",
+#         "EffectRayTracingVolume": "0",
+#         # 'NormalWindowResolution': '(1280.000000,720.000000)',
+
+#     },
+#     "Render": {
+#         "ParallelBuildCommandList": "Enable",
+#         "ParallelBuildProcessorCount": "12",
+#         "RenderWorkerThreadPriorityAboveNormal": "Enable",
+#     },
+#     "Graphics/FSR3": {
+#         "EnableFrameGeneration": "False",
+#         "EnableSharpness": "True",
+#         "Sharpness": "0.8",
+#     },
+# }
+
+
+# low / medium
 changes = {
     'Graphics': {
         "Algorithm": "FSR3",
+        "Bloom_Enable": "False",
         'Fog_Enable': 'False',
         'VolumetricFogControl_Enable': 'False',
         'VRSSetting': 'Performance',
-        "MaxFPS": "60",
+        "MaxFPS": "120",  # Move this configuration to steam launch DXVK_FRAME_RATE=48
         "NormalWindowResolution": "(1920,1280)",
-        "Bloom_Enable": "False",
+        "VSync": "False",
+
+        # For higher quality
+        "Quality": "Performance",
+        "SamplerQuality": "Anisotropic2",
+        "ShadowQuality": "STANDARD",
+        "StreamingTextureLoadLevelBias": "1", # 2 is low, 0 is high
 
         # "SSAO_HalfResolution": "True",
-        # "NormalWindowResolution": "(1280,720)",
     },
     'RenderConfig': {
+        "BloomEnable": "false",
         'EffectVolume': '0',
         'FilmGrainEnable': 'false',
         'GodRayEnable': 'false',
-        'LensDistortionSetting': 'false',
         'LensFlareEnable': 'false',
+        'LensDistortionSetting': 'false',
         'TransparentBufferQuality': 'LOWEST',
         'VRSSetting': 'Performance',
+        "VSync": "false",
         'NormalWindowResolution': '(1920.000000,1280.000000)',
-        "BloomEnable": "false",
-        # 'NormalWindowResolution': '(1280.000000,720.000000)',
+
+        "RayTracingGIEnable": "true",
+        "RayTracingReflectionEnable": "true",
+        "RayTracingShadowEnable": "true",
+        "RayTracingTransparentEnable": "true",
+        "EffectRayTracingVolume": "0",
+
+        "SamplerQuality": "Anisotropic2",
+        "ShadowQuality": "STANDARD",
+        "StreamingTextureLoadLevelBias": "1",
+
     },
     "Render": {
         "ParallelBuildCommandList": "Enable",
-        "ParallelBuildProcessorCount": "10",
+        "ParallelBuildProcessorCount": "12",
         "RenderWorkerThreadPriorityAboveNormal": "Enable",
     },
     "Graphics/FSR3": {
         "EnableFrameGeneration": "True",
         "EnableSharpness": "True",
-        "Sharpness": "0.7",
+        "Sharpness": "0.8",
     },
 }
 
+#%%
 
 def install_reframework():
-    url = "https://github.com/praydog/REFramework/releases/latest/download/MHWILDS.zip"
+    # url = "https://github.com/praydog/REFramework/releases/latest/download/MHWILDS.zip"
+    url = "https://github.com/praydog/REFramework-nightly/releases/latest/download/MHWILDS.zip"
+
     p = "MHWILDS.zip"
     Path(p).write_bytes(requests.get(url).content)
     zipfile.ZipFile(p).extract("dinput8.dll", ".")
 
+def install_disablepostpo():
+    # Disable Post Processing Effects
+    # https://www.nexusmods.com/monsterhunterwilds/mods/221?tab=description
+    url = "https://github.com/TonWonton/MHWilds_DisablePostProcessingEffects/releases/download/v1.3.1/mhwilds_disablepostprocessingeffects.v1.3.1.zip"
+
+    p = "mhwilds_disablepostprocessingeffects.zip"
+    Path(p).write_bytes(requests.get(url).content)
+    archive = zipfile.ZipFile(p)
+    
+    for file in archive.namelist():
+        if file.startswith('reframework/'):
+            archive.extract(file, '.')
+
+def install_volumentric_fog_mod():
+    # https://www.nexusmods.com/monsterhunterwilds/mods/455?tab=files&file_id=2419
+    p = "Tweak Volumetric Fogs-455-1-0-0-1742139119.zip"
+    archive = zipfile.ZipFile(p)
+    
+    for file in archive.namelist():
+        if file.startswith('reframework/'):
+            archive.extract(file, '.')
 
 def mod_installs():
     install_reframework()
+    install_disablepostpo()
+    install_volumentric_fog_mod()
 
+# mod_installs()
+
+#%%
 
 def update_config(file_path, changes):
     # Read the original config file
@@ -126,3 +228,36 @@ cli.add_command(restore)
 
 if __name__ == '__main__':
     cli()
+
+"""
+https://www.nexusmods.com/monsterhunterwilds/mods/816?tab=description
+
+Current list of options:
+
+﻿- Environmental object culling: Hides various small environmental objects which can lead to a significant increase in framerate! See the images for examples.
+﻿In addition, there are options for what object types to hide:
+﻿﻿- Tall grass. Significantly increases framerate in the Windward Plains' open grassy area.
+﻿﻿- Flowers, shrubs, some trees.
+﻿﻿- Rocks, ice, rubble.
+﻿﻿- Decorative objects (not the stuff you slot in your gear).
+﻿﻿- Decals.
+﻿﻿- Lights. Specifically small light sources like from torches and Scoutfly cages.
+﻿﻿- Particles. Dust, sand, leaves, etc. 
+
+﻿- Mesh level of detail (LOD) bias: Controls the level of detail of many objects including monsters. This can lead to funny low poly monsters like those screenshots from the beta.
+
+﻿- Small object culling ratio: The strength of culling (hiding) small objects. This affects a lot of objects and can lead to weird things like NPCs with missing heads when set too high.
+
+- Foliage LOD offset/bias: Controls the level of detail of environmental objects like plants and rocks. This can help a lot for framerate, but there may be a lot more noticeable pop-in.
+
+﻿- Disable texture streaming: Forces all faces to use super low resolution textures, making the game look extra muddy and smudgy.
+
+﻿- Texture LOD bias: Changes the way the game samples textures with distance. Does not work with Special K for some reason.
+
+﻿- Disable dynamic shadows: Does as stated.
+
+﻿- Dynamic shadow quality: Controls the resolution of dynamic shadows. You can set it below the game's "lowest" setting.
+
+﻿- Disable particle effects: Does as stated, but not advisable because it makes combat harder by hiding some projectiles and environmental hazards.
+
+"""
