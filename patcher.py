@@ -77,7 +77,7 @@ changes = {
         "VSync": "False",
 
         # For higher quality
-        "Quality": "Performance",
+        "Quality": "Balanced",# "Performance",
         "SamplerQuality": "Anisotropic2",
         "ShadowQuality": "STANDARD",
         "StreamingTextureLoadLevelBias": "1", # 2 is low, 0 is high
@@ -270,4 +270,48 @@ Current list of options:
 
 ﻿- Disable particle effects: Does as stated, but not advisable because it makes combat harder by hiding some projectiles and environmental hazards.
 
+
+
+
+https://www.nexusmods.com/monsterhunterwilds/mods/91
+
+This is NOT a "low settings mod." The config is based on the lowest preset, but you can change graphics settings in-game (Low to Ultra), and the tweaks will still work. These optimizations are external—they adjust settings that can’t be changed from the in-game menu.
+ Resolution: If you want to change it from 1080p, open the config file, find the resolution setting, change it to your monitor’s resolution, and save the file.
+ Important: Set the config file to Read-Only so the game doesn’t override tweaks. But if you experience crashes or want to tweak settings frequently, you can uncheck Read-Only anytime.
+
+ What This Mod Tweaks - CPU Optimizations:
+
+    ParallelBuildCommandList=Enable → Enables multi-threaded rendering.
+    ParallelBuildProcessorCount=8 → Uses up to 8 threads for better performance.
+    UsingIndepentRenderWorker=Enable → Separates render workers for smoother CPU usage.
+    RenderWorkerThreadPriorityAboveNormal=Disable → Prevents CPU overload on rendering.
+    CentralUpdateTileMapping=Disable → Reduces unnecessary CPU calculations.
+    AutoRangeCompression=true → Dynamically compresses rendering range to save CPU cycles.
+    BaseAutoRangeCompression=64 → Optimizes CPU load for rendering distant objects.
+
+🔹 GPU Optimizations:
+
+    Fog_Enable=False → Removes fog effects for a clearer image and better FPS.
+    SSR_Enable=False → Disables Screen Space Reflections to improve performance.
+    SSSSS_Enable=False → Turns off subsurface scattering (better FPS, affects skin rendering).
+    ShadowCacheEnable=False → Disables shadow caching (better for low VRAM GPUs).
+    UseLowResolutionSDF=True → Uses low-resolution shadow maps for performance.
+    UseLowWaterSimulation=True → Lowers water physics calculations.
+    UseLowWindSimulation=True → Reduces wind effect calculations.
+    VRSSetting=Performance → Enables Variable Rate Shading for better FPS.
+    TransparentBufferQuality=LOWEST → Lowers transparency effects to improve performance.
+
+🔹 Frame Generation Disabled (You Can Enable In-Game):
+
+    EnableFrameGeneration=False (Disabled by default, but you can turn it on in settings).
+
+    FilmGrainEnable=false → Disables film grain effect.
+    LensDistortionSetting=false → Removes lens distortion.
+    GodRayEnable=false → Turns off god rays.
+    LensFlareEnable=false → Disables lens flare.
+    EffectVolume=0 → Lowers post-processing effect calculations.
+
+Game might look slightly different because fog and object blur are disabled,
+making the image clearer. But this does NOT downgrade main graphics
+settings—it just removes unnecessary effects. On high-end PCs, you might not see a big FPS boost, which is expected since these tweaks mostly help mid/low-end GPUs and CPUs.
 """
