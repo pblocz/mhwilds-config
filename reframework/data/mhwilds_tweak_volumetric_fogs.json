@@ -6,7 +6,7 @@
     "emissionEnabled": false,
     "fadeDensity": 10.0,
     "fadeDistance": -10.0,
-    "fogCullingDistanceMultiplier": 1.0199999809265137,
+    "fogCullingDistanceMultiplier": 0.5299999713897705,
     "integrationType": 0,
     "jitterNoiseType": 0,
     "leakBiasMultiplier": 1.0,
